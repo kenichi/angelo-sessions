@@ -4,13 +4,14 @@ module Angelo
     # Session bag will be the basic session accessor and in charge of parsing
     # and saving the session to the store as well as setting accessor id
     class Bag
+      include Crypto
 
       def initialize store, request
         if cookies = request.headers[COOKIE_KEY]
           cookies = cookies.first if Array === cookies
           cookies.split(SEMICOLON).each do |c|
             a = c.split(EQUALS).map &:strip
-            @key = a[1] if a[0] == store.name
+            @key = decrypt(a[1]) if decrypt(a[0]) == store.name
           end
         end
 
