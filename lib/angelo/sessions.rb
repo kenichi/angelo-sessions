@@ -3,11 +3,13 @@ require 'time'
 require "angelo/sessions/version"
 require "angelo/sessions/store"
 require "angelo/sessions/store/local"
+require 'angelo/sessions/crypto'
 require "angelo/sessions/bag"
 
 module Angelo
   module Sessions
     extend Celluloid::Logger
+    include Crypto
 
     COOKIE_KEY = 'Cookie'
     SET_COOKIE_KEY = 'Set-Cookie'
@@ -90,7 +92,11 @@ module Angelo
     end
 
     def set_response_header key
-      headers SET_COOKIE_KEY => COOKIE % [Angelo::Sessions.store.name, key, Angelo::Sessions.store.expires]
+      headers SET_COOKIE_KEY => COOKIE % [
+        encrypt(Angelo::Sessions.store.name),
+        encrypt(key),
+        Angelo::Sessions.store.expires
+      ]
     end
 
   end
