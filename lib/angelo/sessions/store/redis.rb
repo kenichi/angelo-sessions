@@ -19,12 +19,14 @@ module Angelo
           @hash_key
         end
 
+        def redis opts = {}
+          @redis ||= ::Redis.new(opts.merge(driver: :celluloid))
+        end
+
       end
 
-      @@redis = ::Redis.new(driver: :celluloid)
-
       def fetch id
-        hash_bin = @@redis.hget(RedisStore.hash_key, id)
+        hash_bin = RedisStore.redis.hget(RedisStore.hash_key, id)
         if hash_bin && !hash_bin.empty?
           Marshal.load hash_bin
         else
@@ -35,7 +37,7 @@ module Angelo
       def save id, fields
         return nil if fields.length <= 0
         id = id ? id : generate_id
-        @@redis.hset RedisStore.hash_key, id, Marshal.dump(fields)
+        RedisStore.redis.hset RedisStore.hash_key, id, Marshal.dump(fields)
         id
       end
 

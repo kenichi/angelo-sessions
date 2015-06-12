@@ -29,7 +29,8 @@ module Angelo
         s = Base64.decode64 URI.decode_www_form_component s
         c = cipher :decrypt
         c.update(s) + c.final
-      rescue
+      rescue => e
+        warn e.message
         nil
       end
 
