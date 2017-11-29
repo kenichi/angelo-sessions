@@ -12,11 +12,11 @@ module Angelo
         c = OpenSSL::Cipher::AES256.new :CBC
         c.__send__ mode
         c.key = Sessions.store.secret
-        c.iv = if Sessions.store.name
+        c.iv = (if Sessions.store.name
                  BASE_IV % Sessions.store.name
                else
                  Sessions.store.secret
-               end
+               end)[0,16]
         c
       end
 
