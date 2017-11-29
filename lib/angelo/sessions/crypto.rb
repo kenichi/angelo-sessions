@@ -31,6 +31,7 @@ module Angelo
         c.update(s) + c.final
       rescue => e
         warn e.message
+        STDERR.puts e.backtrace.map {|m| "\t#{m}"}
         nil
       end
 
