@@ -93,7 +93,7 @@ module Angelo
 
     def set_response_header key
       headers SET_COOKIE_KEY => COOKIE % [
-        encrypt(Angelo::Sessions.store.name),
+        Angelo::Sessions.store.name,
         encrypt(key),
         Angelo::Sessions.store.expires
       ]

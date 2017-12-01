@@ -6,15 +6,13 @@ module Angelo
     class Bag
       include Crypto
 
-      GA = '_ga'
-
       def initialize store, request
         if cookies = request.headers[COOKIE_KEY]
           cookies = cookies.first if Array === cookies
           cookies.split(SEMICOLON).each do |c|
             a = c.split(EQUALS).map &:strip
-            next if a[0] == GA
-            @key = decrypt(a[1]) if decrypt(a[0]) == store.name
+            next unless a[0] == store.name
+            @key = decrypt(a[1])
           end
         end
 
